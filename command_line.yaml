@@ -1,0 +1,25 @@
+- sensor:
+    name: "Essent Prices Cache"
+    unique_id: essent_prices_cache
+    scan_interval: 3600
+    command: >
+      prev=$(date -u -d @$(($(date +%s) - 3600)) '+%Y-%m-%dT%H:00:00') &&
+      curr=$(date '+%Y-%m-%dT%H:00:00') &&
+      next=$(date -u -d @$(($(date +%s) + 3600)) '+%Y-%m-%dT%H:00:00') &&
+      today=$(date '+%Y-%m-%d') &&
+      jq -c
+      --arg prev "$prev"
+      --arg curr "$curr"
+      --arg next "$next"
+      --arg today "$today"
+      -f /config/jq/essent_preprocess.jq
+      /config/essent_prices.json
+    json_attributes:
+      - electricity
+      - gas
+    value_template: >
+      {% if value_json.electricity.current is not none %}
+        ok
+      {% else %}
+        error
+      {% endif %}

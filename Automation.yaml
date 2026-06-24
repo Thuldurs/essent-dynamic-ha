@@ -1,0 +1,59 @@
+- id: fetchessentpriced
+  alias: 'Essent: Fetch prices at top of hour'
+  triggers:
+  - minutes: '0'
+    trigger: time_pattern
+  actions:
+  - action: shell_command.save_essent_prices
+  - delay:
+      seconds: 10
+  - target:
+      entity_id: sensor.essent_prices_cache
+    action: homeassistant.update_entity
+    data:
+      entity_id:
+      - sensor.essent_prices_cache
+- id: fetcheddonststt
+  alias: 'Essent: Fetch prices on HA start'
+  triggers:
+  - event: start
+    trigger: homeassistant
+  actions:
+  - action: shell_command.save_essent_prices
+  - delay:
+      seconds: 10
+  - target:
+      entity_id: sensor.essent_prices_cache
+    action: homeassistant.update_entity
+    data:
+      entity_id:
+      - sensor.essent_prices_cache
+- id: retreycschegix
+  alias: 'Essent: Retry if cache is empty or error'
+  triggers:
+  - entity_id: sensor.essent_prices_cache
+    to: error
+    for:
+      minutes: 2
+    trigger: state
+  actions:
+  - repeat:
+      count: 3
+      sequence:
+      - delay:
+          minutes: 10
+      - action: shell_command.save_essent_prices
+      - delay:
+          seconds: 10
+      - target:
+          entity_id: sensor.essent_prices_cache
+        action: homeassistant.update_entity
+        data:
+          entity_id:
+          - sensor.essent_prices_cache
+      - if:
+        - condition: state
+          entity_id: sensor.essent_prices_cache
+          state: ok
+        then:
+        - stop: Cache updated successfully

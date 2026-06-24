@@ -1,0 +1,99 @@
+- sensor:
+    - name: "Essent Prices Active"
+      unique_id: essent_prices_active
+      icon: mdi:database-check
+      state: >
+        {% if states('sensor.essent_prices_cache') == 'ok' %}
+          valid
+        {% else %}
+          empty
+        {% endif %}
+      attributes:
+        last_updated: >
+          {{ states.sensor.essent_prices_cache.last_changed | as_timestamp | timestamp_local }}
+
+    - name: "Essent Electricity Price Now"
+      unique_id: essent_electricity_price_now
+      unit_of_measurement: "€/kWh"
+      state_class: measurement
+      icon: mdi:lightning-bolt
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['current']['total'] | float(0) }}
+
+    - name: "Essent Electricity Price Now (ex VAT)"
+      unique_id: essent_electricity_price_now_ex
+      unit_of_measurement: "€/kWh"
+      state_class: measurement
+      icon: mdi:lightning-bolt-outline
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['current']['total_ex'] | float(0) }}
+
+    - name: "Essent Electricity Market Price Now"
+      unique_id: essent_electricity_market_price_now
+      unit_of_measurement: "€/kWh"
+      state_class: measurement
+      icon: mdi:chart-line
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['current']['market'] | float(0) }}
+
+    - name: "Essent Electricity Purchasing Fee Now"
+      unique_id: essent_electricity_purchasing_fee_now
+      unit_of_measurement: "€/kWh"
+      state_class: measurement
+      icon: mdi:tag-outline
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['current']['fee'] | float(0) }}
+
+    - name: "Essent Electricity Energy Tax Now"
+      unique_id: essent_electricity_energy_tax_now
+      unit_of_measurement: "€/kWh"
+      state_class: measurement
+      icon: mdi:bank-outline
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['current']['tax'] | float(0) }}
+
+    - name: "Essent Electricity Min Today"
+      unique_id: essent_electricity_min_today
+      unit_of_measurement: "€/kWh"
+      icon: mdi:arrow-down-bold
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['today']['min'] | float(0) }}
+
+    - name: "Essent Electricity Max Today"
+      unique_id: essent_electricity_max_today
+      unit_of_measurement: "€/kWh"
+      icon: mdi:arrow-up-bold
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['today']['max'] | float(0) }}
+
+    - name: "Essent Electricity Average Today"
+      unique_id: essent_electricity_avg_today
+      unit_of_measurement: "€/kWh"
+      icon: mdi:approximately-equal
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'electricity')['today']['average'] | float(0) }}
+
+    - name: "Essent Gas Price Now"
+      unique_id: essent_gas_price_now
+      unit_of_measurement: "€/m³"
+      state_class: measurement
+      icon: mdi:gas-burner
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'gas')['current']['total'] | float(0) }}
+
+    - name: "Essent Gas Average Today"
+      unique_id: essent_gas_avg_today
+      unit_of_measurement: "€/m³"
+      icon: mdi:approximately-equal
+      availability: "{{ states('sensor.essent_prices_cache') == 'ok' }}"
+      state: >
+        {{ state_attr('sensor.essent_prices_cache', 'gas')['today']['average'] | float(0) }}

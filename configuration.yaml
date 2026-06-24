@@ -1,0 +1,21 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensors.yaml
+template: !include templates.yaml
+command_line: !include command_line.yaml
+shell_command:
+  save_essent_prices: >
+    curl -s --compressed
+    -H 'Accept: application/json'
+    -H 'x-request-origin: client'
+    'https://www.essent.nl/api/public/dynamicpricing/dynamic-prices/v1'
+    -o /config/essent_prices.json

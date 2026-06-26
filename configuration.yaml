@@ -12,10 +12,4 @@ scene: !include scenes.yaml
 sensor: !include sensors.yaml
 template: !include templates.yaml
 command_line: !include command_line.yaml
-shell_command:
-  save_essent_prices: >
-    curl -s --compressed
-    -H 'Accept: application/json'
-    -H 'x-request-origin: client'
-    'https://www.essent.nl/api/public/dynamicpricing/dynamic-prices/v1'
-    -o /config/essent_prices.json
+shell_command: !include shell_commands.yaml

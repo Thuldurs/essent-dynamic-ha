@@ -1,0 +1,10 @@
+save_essent_prices: >
+  tmpfile=$(mktemp) &&
+  curl -s --compressed
+  -H 'Accept: application/json'
+  -H 'x-request-origin: client'
+  'https://www.essent.nl/api/public/dynamicpricing/dynamic-prices/v1'
+  -o "$tmpfile" &&
+  jq -e '.prices | length > 0' "$tmpfile" > /dev/null 2>&1 &&
+  mv "$tmpfile" /config/essent_prices.json ||
+  rm -f "$tmpfile"
